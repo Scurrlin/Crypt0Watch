@@ -10,7 +10,7 @@ const Coins = (props) => {
         <div className='container'>
             <div>
                 <div className='heading'>
-                    <p>#</p>
+                    <p>MC Rank</p>
                     <p className='coin-name'>Coin</p>
                     <p>Price</p>
                     <p>24h</p>

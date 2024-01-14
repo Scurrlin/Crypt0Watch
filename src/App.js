@@ -1,52 +1,38 @@
-import React from 'react';
-import { Switch, Route, Link } from 'react-router-dom';
-import { Layout, Typography, Space } from 'antd';
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import { Routes, Route } from 'react-router-dom'
+import Coins from './components/Coins'
+import Coin from './routes/Coin'
+import Navbar from './components/Navbar'
 
-import { Exchanges, Homepage, News, Cryptocurrencies, CryptoDetails, Navbar } from './components';
-import './App.css';
 
-const App = () => (
-  <div className="app">
-    <div className="navbar">
+function App() {
+
+  const [coins, setCoins] = useState([])
+
+  const url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false'
+
+  useEffect(() => {
+    axios.get(url).then((response) => {
+      setCoins(response.data)
+      // console.log(response.data[0])
+    }).catch((error) => {
+      console.log(error)
+    })
+  }, [])
+
+  return (
+    <>
       <Navbar />
-    </div>
-    <div className="main">
-      <Layout>
-        <div className="routes">
-          <Switch>
-            <Route exact path="/">
-              <Homepage />
-            </Route>
-            <Route exact path="/exchanges">
-              <Exchanges />
-            </Route>
-            <Route exact path="/cryptocurrencies">
-              <Cryptocurrencies />
-            </Route>
-            <Route exact path="/crypto/:coinId">
-              <CryptoDetails />
-            </Route>
-            <Route exact path="/news">
-              <News />
-            </Route>
-          </Switch>
-        </div>
-      </Layout>
-      <div className="footer">
-        <Typography.Title level={5} style={{ color: 'white', textAlign: 'center' }}>Copyright © 2024
-          <Link to="/">
-            Crypt0Watch Inc.
-          </Link> <br />
-          All Rights Reserved.
-        </Typography.Title>
-        <Space>
-          <Link to="/">Home</Link>
-          <Link to="/exchanges">Exchanges</Link>
-          <Link to="/news">News</Link>
-        </Space>
-      </div>
-    </div>
-  </div>
-);
+      <Routes>
+        <Route path='/' element={<Coins coins={coins} />} />
+        <Route path='/coin' element={<Coin />}>
+          <Route path=':coinId' element={<Coin />} />
+        </Route>
+      </Routes>
+
+    </>
+  );
+}
 
 export default App;
